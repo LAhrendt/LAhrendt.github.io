@@ -36,9 +36,9 @@
 
     <label>Kanonens trin</label>
     <select id="step-angle" class="w3-select w3-margin-bottom">
-      <option value="1">Trin 1</option>
-      <option value="2">Trin 2</option>
-      <option value="3">Trin 3</option>
+      <option value="1">Short range</option>
+      <option value="2">Medium range</option>
+      <option value="3">Long range</option>
     </select>
 
     <label>Angiv afstanden til spandens nærmeste kant (cm)</label>
@@ -61,9 +61,9 @@
 
     <label>Kanonens trin</label>
     <select id="step-pos" class="w3-select w3-margin-bottom">
-      <option value="1">Trin 1</option>
-      <option value="2">Trin 2</option>
-      <option value="3">Trin 3</option>
+      <option value="1">Short range</option>
+      <option value="2">Medium range</option>
+      <option value="3">Long range</option>
     </select>
 
     <label>Angiv kanonens vinkel (grader)</label>
@@ -87,16 +87,16 @@
    KONSTANTER
 -------------------- */
 
-const bucketWidth = 0.3;    // Spandens diameter
-const bucketHeight = 0.3;   // Spandens højde
+const bucketWidth = 0.29;    // Spandens diameter
+const bucketHeight = 0.27;   // Spandens højde
 
 const g = 9.82;             // Tyngdeacceleration (m/s^2)
 const y0 = 1.20 - bucketHeight;    // Kanonens højde over spanden (m)
 
 const cannonSteps = {
-  1: 8,    // m/s
-  2: 12,
-  3: 16
+  1: 2.96,    // m/s
+  2: 4.816,
+  3: 6.656
 };
 
 /* --------------------
@@ -198,3 +198,4 @@ function calculateAngle() {
 
 </body>
 </html>
+
