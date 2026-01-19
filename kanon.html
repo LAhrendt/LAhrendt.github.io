@@ -91,7 +91,8 @@ const bucketWidth = 0.29;    // Spandens diameter
 const bucketHeight = 0.27;   // Spandens højde
 
 const g = 9.82;             // Tyngdeacceleration (m/s^2)
-const y0 = 1.20 - bucketHeight;    // Kanonens højde over spanden (m)
+const y0 = 0.98 - bucketHeight;    // Kanonens højde over spanden (m)
+const x0 = 0.00;            // Kanonens startposition på målebåndet (dvs. + = målebåndet starter FØR kanonen, - = målebåndet starter EFTER kanonen)
 
 const cannonSteps = {
   1: 2.96,    // m/s
@@ -145,7 +146,7 @@ function calculatePosition() {
 
   const t = (-b - Math.sqrt(D)) / (2*a);
   const x = v0 * Math.cos(theta) * t;
-  const res = x * 100 - bucketWidth / 2;
+  const res = (x + x0 - bucketWidth / 2) / 100;
 
   if (x < 0) {
     document.getElementById("pos-result").innerHTML =
@@ -165,7 +166,7 @@ function calculateAngle() {
   const step = document.getElementById("step-angle").value;
   const v0 = cannonSteps[step];
 
-  const x = parseFloat(document.getElementById("x-angle").value) / 100 + bucketWidth / 2;
+  const x = parseFloat(document.getElementById("x-angle").value) / 100 - x0 + bucketWidth / 2;
 
   if (isNaN(x) || x <= 0) {
     document.getElementById("angle-result").innerHTML =
@@ -198,4 +199,5 @@ function calculateAngle() {
 
 </body>
 </html>
+
 
