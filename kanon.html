@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Kanonberegner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet"
+        href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body class="w3-light-grey">
+
+<div class="w3-container w3-content w3-margin-top" style="max-width:600px">
+
+  <!-- STARTSIDE -->
+  <div id="page-start" class="w3-card w3-white w3-padding">
+    <h1>Herningsholms kanonberegner</h1>
+
+    <p>
+      Kanonen er monteret i en fast højde over jorden og kan indstilles
+      i tre trin, som giver forskellige udgangshastigheder.
+    </p>
+
+    <button class="w3-button w3-blue w3-margin-bottom" onclick="showPage('angle')">
+      Bestem vinkel
+    </button>
+
+    <button class="w3-button w3-green w3-margin-bottom" onclick="showPage('position')">
+      Bestem position
+    </button>
+  </div>
+
+  <!-- BESTEM VINKEL -->
+  <div id="page-angle" class="w3-card w3-white w3-padding w3-hide">
+    <h2>Bestem vinkel</h2>
+
+    <label>Kanonens trin</label>
+    <select id="step-angle" class="w3-select w3-margin-bottom">
+      <option value="1">Trin 1</option>
+      <option value="2">Trin 2</option>
+      <option value="3">Trin 3</option>
+    </select>
+
+    <label>Angiv afstanden til spandens nærmeste kant (cm)</label>
+    <input id="x-angle" class="w3-input" type="number" step="1">
+
+    <button class="w3-button w3-blue w3-margin-top" onclick="calculateAngle()">
+      Beregn vinkel
+    </button>
+
+    <p id="angle-result" class="w3-margin-top"></p>
+
+    <button class="w3-button w3-text-grey" onclick="showPage('start')">
+      ← Tilbage
+    </button>
+  </div>
+
+  <!-- BESTEM POSITION -->
+  <div id="page-position" class="w3-card w3-white w3-padding w3-hide">
+    <h2>Bestem position</h2>
+
+    <label>Kanonens trin</label>
+    <select id="step-pos" class="w3-select w3-margin-bottom">
+      <option value="1">Trin 1</option>
+      <option value="2">Trin 2</option>
+      <option value="3">Trin 3</option>
+    </select>
+
+    <label>Angiv kanonens vinkel (grader)</label>
+    <input id="theta-pos" class="w3-input" type="number" step="1">
+
+    <button class="w3-button w3-green w3-margin-top" onclick="calculatePosition()">
+      Beregn position
+    </button>
+
+    <p id="pos-result" class="w3-margin-top"></p>
+
+    <button class="w3-button w3-text-grey" onclick="showPage('start')">
+      ← Tilbage
+    </button>
+  </div>
+
+</div>
+
+<script>
+/* --------------------
+   KONSTANTER
+-------------------- */
+
+const bucketWidth = 0.3;    // Spandens diameter
+const bucketHeight = 0.3;   // Spandens højde
+
+const g = 9.82;             // Tyngdeacceleration (m/s^2)
+const y0 = 1.20 - bucketHeight;    // Kanonens højde over spanden (m)
+
+const cannonSteps = {
+  1: 8,    // m/s
+  2: 12,
+  3: 16
+};
+
+/* --------------------
+   SIDEVISNING
+-------------------- */
+
+function showPage(page) {
+  document.getElementById("page-start").classList.add("w3-hide");
+  document.getElementById("page-angle").classList.add("w3-hide");
+  document.getElementById("page-position").classList.add("w3-hide");
+
+  document.getElementById("page-" + page).classList.remove("w3-hide");
+}
+
+/* --------------------
+   POSITION (givet vinkel)
+-------------------- */
+
+function calculatePosition() {
+  const step = document.getElementById("step-pos").value;
+  const v0 = cannonSteps[step];
+
+  const thetaDeg = parseFloat(
+    document.getElementById("theta-pos").value
+  );
+
+  if (isNaN(thetaDeg)) {
+    document.getElementById("pos-result").innerHTML =
+      "Indtast en gyldig vinkel.";
+    return;
+  }
+
+  const theta = thetaDeg * Math.PI / 180;
+
+  const a = -0.5 * g;
+  const b = v0 * Math.sin(theta);
+  const c = y0;
+
+  const D = b*b - 4*a*c;
+
+  if (D < 0) {
+    document.getElementById("pos-result").innerHTML =
+      "Bolden rammer aldrig jorden med denne vinkel.";
+    return;
+  }
+
+  const t = (-b - Math.sqrt(D)) / (2*a);
+  const x = v0 * Math.cos(theta) * t;
+  const res = x * 100 - bucketWidth / 2;
+
+  if (x < 0) {
+    document.getElementById("pos-result").innerHTML =
+      "Bolden flyver bagud – vælg en anden vinkel.";
+    return;
+  }
+
+  document.getElementById("pos-result").innerHTML =
+    `Spandens kant skal placeres ved <strong>${res.toFixed(0)} cm</strong>`;
+}
+
+/* --------------------
+   VINKEL (givet position)
+-------------------- */
+
+function calculateAngle() {
+  const step = document.getElementById("step-angle").value;
+  const v0 = cannonSteps[step];
+
+  const x = parseFloat(document.getElementById("x-angle").value) / 100 + bucketWidth / 2;
+
+  if (isNaN(x) || x <= 0) {
+    document.getElementById("angle-result").innerHTML =
+      "Indtast en gyldig afstand.";
+    return;
+  }
+
+  const D = v0**4 - g * (g*x*x + 2*y0*v0*v0);
+
+  if (D < 0) {
+    document.getElementById("angle-result").innerHTML =
+      "Spanden står for langt væk – bolden kan ikke nå så langt med dette trin.";
+    return;
+  }
+
+  const theta1 = Math.atan(
+    (v0*v0 + Math.sqrt(D)) / (g*x)
+  ) * 180 / Math.PI;
+
+  const theta2 = Math.atan(
+    (v0*v0 - Math.sqrt(D)) / (g*x)
+  ) * 180 / Math.PI;
+
+  document.getElementById("angle-result").innerHTML =
+    `Mulige vinkler:<br>
+     Lav vinkel: <strong>${theta2.toFixed(0)}°</strong><br>
+     Høj vinkel: <strong>${theta1.toFixed(0)}°</strong>`;
+}
+</script>
+
+</body>
+</html>
