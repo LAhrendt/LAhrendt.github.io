@@ -120,11 +120,9 @@ function calculatePosition() {
   const step = document.getElementById("step-pos").value;
   const v0 = cannonSteps[step];
 
-  const thetaDeg = parseFloat(
-    document.getElementById("theta-pos").value
-  );
+  const thetaDeg = parseFloat(document.getElementById("theta-pos").value);
 
-  if (isNaN(thetaDeg)) {
+  if (isNaN(thetaDeg) || thetaDeg > 90 || thetaDeg < 0) {
     document.getElementById("pos-result").innerHTML =
       "Indtast en gyldig vinkel.";
     return;
@@ -146,7 +144,7 @@ function calculatePosition() {
 
   const t = (-b - Math.sqrt(D)) / (2*a);
   const x = v0 * Math.cos(theta) * t;
-  const res = (x + x0 - bucketWidth / 2) / 100;
+  const res = (x + x0 - bucketWidth / 2) * 100;
 
   if (x < 0) {
     document.getElementById("pos-result").innerHTML =
@@ -199,5 +197,3 @@ function calculateAngle() {
 
 </body>
 </html>
-
-
