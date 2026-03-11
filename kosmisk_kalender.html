@@ -28,7 +28,7 @@
     
     <form onsubmit="event.preventDefault(); beregn();">
         <label id="inputLabel" style="font-weight:bold; display:block; margin-bottom:8px;">Antal år efter Big Bang:</label>
-        <input type="number" id="aarIndtast" placeholder="Indtast tal..." required>
+        <input type="number" id="aarIndtast" placeholder="Indtast tal..." min="0" max="13800000000" required>
         <button type="submit">Beregn tidspunkt</button>
     </form>
 
